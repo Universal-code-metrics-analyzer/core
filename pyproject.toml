@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ucma"
+name = "core"
 version = "0.1.0"
 description = ""
 authors = ["Alex Pirogov <pirogovalexandr00@mail.ru>"]
