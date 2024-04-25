@@ -56,7 +56,7 @@ class GitProcessor[ConfigShapeT: GitProcessorConfigShape, TreeT, BlobT](metaclas
     async def cleanup(self) -> None:
         pass
 
-    async def process(self) -> str:
+    async def process(self) -> TreeData:
         result = await self.process_tree(await self.get_root_tree(), 0)
         await self.cleanup()
-        return result.model_dump_json()
+        return result
