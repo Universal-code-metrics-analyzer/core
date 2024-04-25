@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class GitProcessorConfigShape(BaseModel):
-    pass
+    verbose: bool = False
 
 
 class BlobData(BaseModel):
@@ -37,25 +37,26 @@ class GitProcessor[ConfigShapeT: GitProcessorConfigShape, TreeT, BlobT](metaclas
 
             setattr(cls, el, attr)
 
-    def __init__(self, config: ConfigShapeT) -> None:
-        self.config = self.validate_config(config)
+    def __init__(self, config_dict: dict[str, Any], commit_sha: str) -> None:
+        self.config = self.validate_config(config_dict)
+        self.commit_sha = commit_sha
 
-    def validate_config(self, config: ConfigShapeT) -> ConfigShapeT:
-        return self.config_shape.model_validate(dict(config))
+    def validate_config(self, config_dict: dict[str, Any]) -> ConfigShapeT:
+        return self.config_shape.model_validate(config_dict)
 
     @abstractmethod
-    async def get_root_tree(self, commit_sha: str) -> TreeT: ...
+    async def get_root_tree(self) -> TreeT: ...
 
     @abstractmethod
     async def process_blob(self, blob: BlobT, depth: int) -> BlobData: ...
 
     @abstractmethod
-    async def process_tree(self, tree: TreeT, depth: int = 0) -> TreeData: ...
+    async def process_tree(self, tree: TreeT, depth: int) -> TreeData: ...
 
     async def cleanup(self) -> None:
         pass
 
-    async def process(self, commit_sha: str) -> str:
-        result = await self.process_tree(await self.get_root_tree(commit_sha))
+    async def process(self) -> str:
+        result = await self.process_tree(await self.get_root_tree(), 0)
         await self.cleanup()
         return result.model_dump_json()
