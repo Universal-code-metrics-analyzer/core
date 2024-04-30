@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from pydantic import BaseModel, Field
 
+from .git_processor import TreeData
+
 
 class MetricsCalculatorConfigShape(BaseModel):
     verbose: bool = False
@@ -55,8 +57,9 @@ class MetricsCalculator[ConfigShapeT: MetricsCalculatorConfigShape](metaclass=AB
 
             setattr(cls, el, attr)
 
-    def __init__(self, config_dict: dict[str, Any]) -> None:
+    def __init__(self, config_dict: dict[str, Any], tree_data: TreeData) -> None:
         self.config = self.validate_config(config_dict)
+        self.tree_data = tree_data
 
     def validate_config(self, config_dict: dict[str, Any]) -> ConfigShapeT:
         return self.config_shape.model_validate(config_dict)
