@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from .git_processor import TreeData
 
@@ -11,34 +11,32 @@ class MetricsCalculatorConfigShape(BaseModel):
 
 
 class MetricResult(BaseModel):
-    metric_name: str = Field(alias='metricName')
-    subject_path: str = Field(alias='subjectPath')
+    metric_name: str
+    subject_path: str
     value: float
     description: str | None = None
 
 
 class BlobMetricResult(MetricResult):
-    result_scope: Literal['module'] | Literal['class'] | Literal['function'] = Field(
-        alias='resultScope'
-    )
+    result_scope: Literal['module'] | Literal['class'] | Literal['function']
 
 
 class BlobMetrics(BaseModel):
     type: Literal['blob']
     name: str
     path: str
-    metric_results: list[BlobMetricResult] = Field(alias='metricResults')
+    metric_results: list[BlobMetricResult]
 
 
 class TreeMetricResult(MetricResult):
-    result_scope: Literal['program'] | Literal['package'] = Field(alias='resultScope')
+    result_scope: Literal['program'] | Literal['package']
 
 
 class TreeMetrics(BaseModel):
     type: Literal['tree']
     name: str
     path: str
-    metric_results: list[TreeMetricResult] = Field(alias='metricResults')
+    metric_results: list[TreeMetricResult]
     trees: list['TreeMetrics']
     blobs: list[BlobMetrics]
 
