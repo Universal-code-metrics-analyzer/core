@@ -24,12 +24,12 @@ class ReportGenerator[ConfigShapeT: ReportGenratorConfigShape](ABC):
 
             setattr(cls, el, attr)
 
-    def __init__(self, config: ConfigShapeT, tree_metrics: TreeMetrics) -> None:
-        self.config = self.validate_config(config)
+    def __init__(self, config_dict: dict[str, Any], tree_metrics: TreeMetrics) -> None:
+        self.config = self.validate_config(config_dict)
         self.tree_metrics = tree_metrics
 
-    def validate_config(self, config: ConfigShapeT) -> ConfigShapeT:
-        return self.config_shape.model_validate(dict(config))
+    def validate_config(self, config_dict: dict[str, Any]) -> ConfigShapeT:
+        return self.config_shape.model_validate(config_dict)
 
     @abstractmethod
     async def generate(self, tree_metrics: TreeMetrics) -> None: ...
