@@ -37,9 +37,9 @@ class GitProcessor[ConfigShapeT: GitProcessorConfigShape, TreeT, BlobT](metaclas
 
             setattr(cls, el, attr)
 
-    def __init__(self, config_dict: dict[str, Any], ref: str) -> None:
+    def __init__(self, config_dict: dict[str, Any], sha: str) -> None:
         self.config = self.validate_config(config_dict)
-        self.ref = ref
+        self.sha = sha
 
     def validate_config(self, config_dict: dict[str, Any]) -> ConfigShapeT:
         return self.config_shape.model_validate(config_dict)
