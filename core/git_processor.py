@@ -27,8 +27,8 @@ class TreeData(BaseModel):
 class CommitMeta(BaseModel):
     author_email: EmailStr
     committer_email: EmailStr
-    committed_date: datetime
     authored_date: datetime
+    committed_date: datetime
     message: str
 
 

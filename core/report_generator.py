@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
 
+from core.git_processor import CommitMeta
+
 from .metrics_calculator import TreeMetrics
 
 
@@ -24,10 +26,17 @@ class ReportGenerator[ConfigShapeT: ReportGenratorConfigShape](ABC):
 
             setattr(cls, el, attr)
 
-    def __init__(self, config_dict: dict[str, Any], tree_metrics: TreeMetrics, sha: str) -> None:
+    def __init__(
+        self,
+        config_dict: dict[str, Any],
+        sha: str,
+        commit_meta: CommitMeta,
+        tree_metrics: TreeMetrics,
+    ) -> None:
         self.config = self.validate_config(config_dict)
-        self.tree_metrics = tree_metrics
         self.sha = sha
+        self.commit_meta = commit_meta
+        self.tree_metrics = tree_metrics
 
     def validate_config(self, config_dict: dict[str, Any]) -> ConfigShapeT:
         return self.config_shape.model_validate(config_dict)
