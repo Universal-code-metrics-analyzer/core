@@ -5,7 +5,7 @@ This repository encapsulates abstract classes and interfaces to simplify the pro
 **Install**
 
 ``` bash
-poetry add git+https://github.com/Universal-code-metrics-analyzer/core.git@v0.1.0
+poetry add git+https://github.com/Universal-code-metrics-analyzer/core.git@v0.2.0
 ```
 
 ## Git processor plugin

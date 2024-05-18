@@ -15,28 +15,22 @@ class MetricResult(BaseModel):
     subject_path: str
     value: float
     description: str | None = None
-
-
-class BlobMetricResult(MetricResult):
     result_scope: Literal['module'] | Literal['class'] | Literal['function']
+    level: str | None = None
 
 
 class BlobMetrics(BaseModel):
     type: Literal['blob']
     name: str
     path: str
-    metric_results: list[BlobMetricResult]
-
-
-class TreeMetricResult(MetricResult):
-    result_scope: Literal['program'] | Literal['package']
+    metric_results: list[MetricResult]
 
 
 class TreeMetrics(BaseModel):
     type: Literal['tree']
     name: str
     path: str
-    metric_results: list[TreeMetricResult]
+    metric_results: list[MetricResult]
     trees: list['TreeMetrics']
     blobs: list[BlobMetrics]
 

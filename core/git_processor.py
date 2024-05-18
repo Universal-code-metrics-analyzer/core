@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class GitProcessorConfigShape(BaseModel):
@@ -23,6 +24,14 @@ class TreeData(BaseModel):
     type: str = 'tree'
 
 
+class CommitMeta(BaseModel):
+    author_email: EmailStr
+    committer_email: EmailStr
+    authored_date: datetime
+    committed_date: datetime
+    message: str
+
+
 class GitProcessor[ConfigShapeT: GitProcessorConfigShape, TreeT, BlobT](metaclass=ABCMeta):
     if TYPE_CHECKING:
         config_shape: type[ConfigShapeT]
@@ -37,9 +46,9 @@ class GitProcessor[ConfigShapeT: GitProcessorConfigShape, TreeT, BlobT](metaclas
 
             setattr(cls, el, attr)
 
-    def __init__(self, config_dict: dict[str, Any], ref: str) -> None:
+    def __init__(self, config_dict: dict[str, Any], sha: str) -> None:
         self.config = self.validate_config(config_dict)
-        self.ref = ref
+        self.sha = sha
 
     def validate_config(self, config_dict: dict[str, Any]) -> ConfigShapeT:
         return self.config_shape.model_validate(config_dict)
@@ -60,3 +69,6 @@ class GitProcessor[ConfigShapeT: GitProcessorConfigShape, TreeT, BlobT](metaclas
         result = await self.process_tree(await self.get_root_tree(), 0)
         await self.cleanup()
         return result
+
+    async def get_commit_meta(self) -> CommitMeta:
+        raise NotImplementedError
