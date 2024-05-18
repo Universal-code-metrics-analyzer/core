@@ -16,6 +16,7 @@ class MetricResult(BaseModel):
     value: float
     description: str | None = None
     result_scope: Literal['module'] | Literal['class'] | Literal['function']
+    level: str | None = None
 
 
 class BlobMetrics(BaseModel):
